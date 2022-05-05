@@ -1,4 +1,5 @@
 import { useState, useRef, Fragment } from "react";
+import axios from "axios";
 import { Form, Button, Spinner } from "react-bootstrap";
 import { collection, addDoc } from "firebase/firestore";
 import db from "./Firebase";
@@ -68,7 +69,36 @@ const FormCleaningHourlyPage = ({ userId }) => {
       const result = await addData(formData);
 
       if (result.status === 200) {
-        setSuccess(true);
+        const data = {
+          user: "Ua908c4f21052858f406000588a3cd7fd",
+          message: [
+            {
+              type: "text",
+              text: "test!",
+            },
+            {
+              type: "text",
+              text: "another message box.",
+            },
+          ],
+        };
+
+        axios
+          .post(
+            "https://best-care.herokuapp.com/push-message",
+            JSON.stringify(data),
+            {
+              headers: { "Content-Type": "application/json" },
+            }
+          )
+          .then(function (response) {
+            if (response.status === 200) {
+              setSuccess(true);
+            }
+          })
+          .catch(function (e) {
+            throw new Error(e);
+          });
       }
 
       setLoading(false);
